@@ -12,7 +12,8 @@ function Goods:new()
         tid = '',
         name = '',
         type = '',
-        sum = '',
+        role = '',
+        sum = 1,
         exp = nil,
         baseAttr = {hp = nil, mp = nil, speed = nil, sense = nil, strong = nil},
         realAttr = {hp = nil, mp = nil, speed = nil, sense = nil, strong = nil},
@@ -25,9 +26,13 @@ function Goods:new()
 end
 
 function Goods:setAttr(opt)
+    if opt == nil then
+        return False
+    end
     self.id = opt.id or self.id
     self.name = opt.name or self.name
     self.type = opt.type or self.type
+    self.role = opt.role or self.role
     self.sum = opt.sum or self.sum
     self.exp = opt.exp or self.exp
     self.useHook = opt.useHook or self.useHook
@@ -55,5 +60,17 @@ function Goods:setAttr(opt)
         self.realAttr['strong'] = opt.real['strong'] or self.realAttr['strong']
     end
     self.otherAttr = opt.other or self.otherAttr
-    return self
 end
+
+function Goods:use(user, target, sum)
+    local action = self.type..'_'..self.role 
+    self.Actions[action](self, user, target, sum)
+    if self.useHook then
+        self.useHook(self, user, target, sum)
+    end
+end
+
+Goods.Actions = {
+    equip_buff = function()
+    end,
+}

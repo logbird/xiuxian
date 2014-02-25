@@ -13,7 +13,8 @@ function Sprite:new(name, sex)
         loc = {x = 0, y = 0},
         baseAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
         realAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
-        goods = {}
+        goods = {},
+        buff = {},
     }
     setmetatable(o, self)
     self.__index = self

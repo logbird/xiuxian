@@ -1,16 +1,13 @@
 require("sprite")
+require("bag")
 require("goods")
 
 GAME = {}
 GAME.level = require("data.level")
 math.randomseed(os.time()) 
 
+local b = Bag:new()
 
-local opt = {id = 10, name = 'yao', tid = true}
-
-local g = Goods:new():setAttr(opt)
-
-for k, v in pairs(g) do
+for k, v in pairs(b) do
     print(k, v)
 end
-
