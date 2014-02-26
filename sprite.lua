@@ -2,8 +2,9 @@
 Sprite = {
 }
 
-function Sprite:new(name, sex)
+function Sprite:new(id, name, sex)
     local o = {
+        id = id,
         name = '',
         sex = '',
         talent = 0,
@@ -15,6 +16,9 @@ function Sprite:new(name, sex)
         realAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
         goods = {},
         buff = {},
+        equip = {},
+        -- 炼化
+        digest = {},
     }
     setmetatable(o, self)
     self.__index = self
@@ -36,10 +40,14 @@ function Sprite:setSex(sex)
 end
 
 function Sprite:setTalent(talent)
-    self.talent = talent
+    if talent > 100 then
+        self.talent = 100
+    else
+        self.talent = talent
+    end
 end
 
-function Sprite:setAttr(attr)
+function Sprite:setbaseAttr(attr)
     local b = self.baseAttr;
     self.baseAttr['hp'] = attr['hp'] or b['hp'] 
     self.baseAttr['mp'] = attr['mp'] or b['mp']
@@ -68,6 +76,30 @@ function Sprite:setRealAttr(attr)
     end
 end
 
+function Sprite:addAttr(attr)
+    if attr.talent then
+        self:setTalent(self.talent + attr.talent)
+    end
+    if attr.exp then
+        self.addExp(attr.exp)
+    end
+    if attr.baseAttr then
+        self.baseAttr = self:attrPlus(self.baseAttr, attr.baseAttr)
+    end
+    if attr.realAttr then
+        self.realAttr = self:attrPlus(self.realAttr, attr.realAttr)
+    end
+end
+
+-- 两个table进行相加
+function Sprite:attrPlus(old, new)
+    for k, v in pairs(old) do
+        if new[k] then
+            old[k] = v + new[k]
+        end
+    end
+end
+
 function Sprite:addExp(exp)
     local need = GAME.level.expNeed[self.level]
     if self.level >= GAME.level.max then
@@ -81,4 +113,52 @@ function Sprite:addExp(exp)
         self:addExp(0)
     end
 end
+
+function Sprite:addBuff(id, type, buff)
+    local buff = {
+        type = type,
+        effect = buff.role,
+        buff = buff,
+    }
+    self.buff[id] = buff
+end
+
+function Sprite:delBuff(id)
+    if self.buff[id] then
+        self.buff[id] = nil
+    end
+end
+
+function Sprite:addEquip(equip)
+    -- 再次使用则 关闭
+    if self.equip[equip.id] then
+        self:delEquip(equip.id)
+    else
+        self.equip[equip.id] = equip
+    end
+end
+
+function Sprite:delEquip(id)
+    if self.equip[id] then
+        self.equip[id] = nil
+    end
+end
+
+function Sprite:addDigest(id, type, digest)
+    self.digest[id] = {
+        digest = digest,
+        type = type
+    }
+end
+
+function Sprite:delDigest(id)
+    if self.digest[id] then
+        self.digest[id] = nil
+    end
+end
+
+-- 攻击者 攻击类型(物品、技能、肉身) 攻击数据
+function Sprite:defAction(from, type, atk)
+end
+
 

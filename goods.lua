@@ -1,9 +1,7 @@
 -- goods基类
-Goods = {}
-
-function Goods.add()
-    print(Goods.index)
-end
+Goods = {
+    name = 'goods',
+}
 
 function Goods:new()
     local o = {
@@ -17,6 +15,7 @@ function Goods:new()
         exp = nil,
         baseAttr = {hp = nil, mp = nil, speed = nil, sense = nil, strong = nil},
         realAttr = {hp = nil, mp = nil, speed = nil, sense = nil, strong = nil},
+        time = 0,
         useHook = nil,
         otherAttr = nil
     }
@@ -35,6 +34,7 @@ function Goods:setAttr(opt)
     self.role = opt.role or self.role
     self.sum = opt.sum or self.sum
     self.exp = opt.exp or self.exp
+    self.time = opt.time or self.time
     self.useHook = opt.useHook or self.useHook
 
     -- 用于分组 opt.tid 为True 则随机生成tid
@@ -64,13 +64,79 @@ end
 
 function Goods:use(user, target, sum)
     local action = self.type..'_'..self.role 
-    self.Actions[action](self, user, target, sum)
+    -- 执行常规操作
+    if self.Actions[action] then
+        self.Actions[action](self, user, target, sum)
+    end
+    -- 钩子操作
     if self.useHook then
-        self.useHook(self, user, target, sum)
+        for k, func in pairs(self.useHook) do
+            func(self, user, target, sum)
+        end
     end
 end
 
 Goods.Actions = {
-    equip_buff = function()
+    equip_buff = function(g, user, target, sum)
+        if g.time > 0 then
+            Goods.buffAction(g, user, target)
+        else
+            user:addEquip(g);
+        end
+        return true
     end,
+    equip_debuff = function(g, user, target, sum)
+        if g.time > 0 then
+            Goods.buffAction(g, user, target)
+        else
+            user:addEquip(g);
+        end
+        return true
+    end,
+    equip_hurt = function(g, user, target, sum)
+        if g.time > 0 then
+            Goods.buffAction(g, user, target)
+        else
+            self:hurtAction(g, user, target)
+        end
+        return true
+    end,
+    equip_def = function(g, user, target, sum)
+        if g.time > 0 then
+            Goods.buffAction(g, user, target)
+        else
+            user:addEquip(g);
+        end
+        return true
+    end,
+    medicine_buff = function(g, user, target, sum)
+        sum = sum or 1
+        if self.sum < sum then
+            return false
+        elseif self.sum == sum then
+            self = nil
+        elseif self.sum > sum then
+            self.sum = self.sum - sum
+        end
+        if g.time > 0 then
+            Goods.buffAction(g, user, target)
+        else
+            for k, v in pairs(target) do
+                v:addAttr(g)
+            end
+        end
+    end
 }
+
+function Goods.buffAction(g, user, target)
+    local buffID = g.id .. "_" .. g.tid;
+    for k, v in pairs(target) do
+        v:addBuff(buffID, Goods.name, g)
+    end
+end
+
+function Goods.hurtAction(g, user, target)
+    for k, v in pairs(target) do
+        v:defAction(user, Goods.name, g)
+    end
+end
