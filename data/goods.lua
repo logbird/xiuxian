@@ -2,9 +2,11 @@ local goods = {
     {
         id = 1,
         name = '活血珠',
-        type = 'equip',
+        type = 'medicine',
         role = 'buff',
-        time = 10,
+        time = 0,
+        exp = 1040,
+        sum = 10,
         base = {
             hp = 100,
             mp = 100,

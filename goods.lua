@@ -30,10 +30,10 @@ function Goods:setAttr(opt)
     end
     self.id = opt.id or self.id
     self.name = opt.name or self.name
+    self.exp = opt.exp or self.exp
     self.type = opt.type or self.type
     self.role = opt.role or self.role
     self.sum = opt.sum or self.sum
-    self.exp = opt.exp or self.exp
     self.time = opt.time or self.time
     self.useHook = opt.useHook or self.useHook
 
@@ -111,12 +111,12 @@ Goods.Actions = {
     end,
     medicine_buff = function(g, user, target, sum)
         sum = sum or 1
-        if self.sum < sum then
+        if g.sum < sum then
             return false
-        elseif self.sum == sum then
-            self = nil
-        elseif self.sum > sum then
-            self.sum = self.sum - sum
+        elseif g.sum == sum then
+            g.sum = 0
+        elseif g.sum > sum then
+            g.sum = g.sum - sum
         end
         if g.time > 0 then
             Goods.buffAction(g, user, target)

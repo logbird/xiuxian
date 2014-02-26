@@ -81,13 +81,13 @@ function Sprite:addAttr(attr)
         self:setTalent(self.talent + attr.talent)
     end
     if attr.exp then
-        self.addExp(attr.exp)
+        self:addExp(attr.exp)
     end
     if attr.baseAttr then
-        self.baseAttr = self:attrPlus(self.baseAttr, attr.baseAttr)
+        self:attrPlus(self.baseAttr, attr.baseAttr)
     end
     if attr.realAttr then
-        self.realAttr = self:attrPlus(self.realAttr, attr.realAttr)
+        self:attrPlus(self.realAttr, attr.realAttr)
     end
 end
 
@@ -99,6 +99,20 @@ function Sprite:attrPlus(old, new)
         end
     end
 end
+-- 两个table进行相乘
+function Sprite:attrMutiply(old, new)
+    for k, v in pairs(old) do
+        if new[k] then
+            old[k] = v * new[k]
+        end
+    end
+end
+
+function Sprite:bestState()
+    for k, v in pairs(self.baseAttr) do
+        self.realAttr[k] = v
+    end
+end
 
 function Sprite:addExp(exp)
     local need = GAME.level.expNeed[self.level]
@@ -107,11 +121,44 @@ function Sprite:addExp(exp)
     end
     self.exp = self.exp + exp
     if self.exp >= need then
-        self.level = self.level + 1
-        self.__levelShow = GAME.level.levelMap[self.level]
-        self.exp = self.exp - need
-        self:addExp(0)
+        if self:levelUP() then
+            self.exp = self.exp - need
+            self:addExp(0)
+        end
     end
+end
+
+function Sprite:levelUP()
+    if self.level + 1 > GAME.level.max then
+        return False
+    end
+    self.level = self.level + 1
+    self.__levelShow = GAME.level.levelMap[self.level]
+    local r = self.baseAttr;
+    -- 增长因子
+    local factor = self:getLevelFactor()
+    -- 属性增长
+    self:attrMutiply(self.baseAttr, factor)
+    -- 回复最佳状态
+    self:bestState()
+    return true
+end
+
+function Sprite:getLevelFactor()
+    local hp = self.level % 3 == 1 and 1.8 or 1.2
+    local mp = self.level % 3 == 1 and 1.8 or 1.2
+    local speed = self.level % 3 == 1 and 1.2 or 1.5
+    local sense = self.level % 3 == 1 and 1.8 or 1.1
+    local strong = self.level % 3 == 1 and 1.2 or 1.1
+
+    local factor = {
+        hp = hp,
+        mp = mp,
+        speed = speed,
+        sense = sense,
+        strong = strong,
+    }
+    return factor
 end
 
 function Sprite:addBuff(id, type, buff)
