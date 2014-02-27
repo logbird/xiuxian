@@ -94,7 +94,7 @@ end
 -- 两个table进行相加
 function Sprite:attrPlus(old, new)
     for k, v in pairs(old) do
-        if new[k] then
+        if new[k] ~= nil then
             old[k] = v + new[k]
         end
     end
@@ -192,10 +192,14 @@ function Sprite:delEquip(id)
 end
 
 function Sprite:addDigest(id, type, digest)
-    self.digest[id] = {
-        digest = digest,
-        type = type
-    }
+    if self.digest[id] then
+        self.digest[id].digest.time = digest.time + self.digest[id].digest.time
+    else
+        self.digest[id] = {
+            digest = digest,
+            type = type
+        }
+    end
 end
 
 function Sprite:delDigest(id)
@@ -204,8 +208,10 @@ function Sprite:delDigest(id)
     end
 end
 
--- 攻击者 攻击类型(物品、技能、肉身) 攻击数据
-function Sprite:defAction(from, type, atk)
+function Sprite:getRealAttr()
 end
 
 
+-- 攻击者 攻击类型(物品、技能、肉身) 攻击数据
+function Sprite:defAction(from, type, atk)
+end

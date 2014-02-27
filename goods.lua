@@ -62,22 +62,22 @@ function Goods:setAttr(opt)
     self.otherAttr = opt.other or self.otherAttr
 end
 
-function Goods:use(user, target, sum)
+function Goods:use(user, target)
     local action = self.type..'_'..self.role 
     -- 执行常规操作
     if self.Actions[action] then
-        self.Actions[action](self, user, target, sum)
+        self.Actions[action](self, user, target)
     end
     -- 钩子操作
     if self.useHook then
         for k, func in pairs(self.useHook) do
-            func(self, user, target, sum)
+            func(self, user, target)
         end
     end
 end
 
 Goods.Actions = {
-    equip_buff = function(g, user, target, sum)
+    equip_buff = function(g, user, target)
         if g.time > 0 then
             Goods.buffAction(g, user, target)
         else
@@ -85,7 +85,7 @@ Goods.Actions = {
         end
         return true
     end,
-    equip_debuff = function(g, user, target, sum)
+    equip_debuff = function(g, user, target)
         if g.time > 0 then
             Goods.buffAction(g, user, target)
         else
@@ -93,7 +93,7 @@ Goods.Actions = {
         end
         return true
     end,
-    equip_hurt = function(g, user, target, sum)
+    equip_hurt = function(g, user, target)
         if g.time > 0 then
             Goods.buffAction(g, user, target)
         else
@@ -101,7 +101,7 @@ Goods.Actions = {
         end
         return true
     end,
-    equip_def = function(g, user, target, sum)
+    equip_def = function(g, user, target)
         if g.time > 0 then
             Goods.buffAction(g, user, target)
         else
@@ -109,8 +109,8 @@ Goods.Actions = {
         end
         return true
     end,
-    medicine_buff = function(g, user, target, sum)
-        sum = sum or 1
+    medicine_buff = function(g, user, target)
+        sum = 1
         if g.sum < sum then
             return false
         elseif g.sum == sum then
@@ -120,6 +120,23 @@ Goods.Actions = {
         end
         if g.time > 0 then
             Goods.buffAction(g, user, target)
+        else
+            for k, v in pairs(target) do
+                v:addAttr(g)
+            end
+        end
+    end,
+    medicine_digest = function(g, user, target)
+        sum = 1
+        if g.sum < sum then
+            return false
+        elseif g.sum == sum then
+            g.sum = 0
+        elseif g.sum > sum then
+            g.sum = g.sum - sum
+        end
+        if g.time > 0 then
+            Goods.addDigest(g.id, Goods.name, g)
         else
             for k, v in pairs(target) do
                 v:addAttr(g)

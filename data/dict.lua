@@ -7,6 +7,7 @@ dict.type = {
 }
 dict.role = {
     buff = '增益',
+    digest = '炼化',
     debuff = '减益',
     hurt = '伤害',
     def = '防御',

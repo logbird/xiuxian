@@ -16,17 +16,6 @@ end
 
 local s = Sprite:new(1, '张三', 1)
 local g = Goods:new()
+start = socket.gettime()
 g:setAttr(GAME.goods[1])
 g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-g:use(s, {s}, 1)
-
-debug(s)
-debug(s.baseAttr)
