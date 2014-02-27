@@ -10,7 +10,7 @@ function Sprite:new(id, name, sex)
         talent = 0,
         exp = 0,
         level = 1,
-        __levelShow = GAME.level.levelMap[1],
+        __levelShow = gameCore.level.levelMap[1],
         loc = {x = 0, y = 0},
         baseAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
         realAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
@@ -115,8 +115,8 @@ function Sprite:bestState()
 end
 
 function Sprite:addExp(exp)
-    local need = GAME.level.expNeed[self.level]
-    if self.level >= GAME.level.max then
+    local need = gameCore.level.expNeed[self.level]
+    if self.level >= gameCore.level.max then
         return False
     end
     self.exp = self.exp + exp
@@ -129,11 +129,11 @@ function Sprite:addExp(exp)
 end
 
 function Sprite:levelUP()
-    if self.level + 1 > GAME.level.max then
+    if self.level + 1 > gameCore.level.max then
         return False
     end
     self.level = self.level + 1
-    self.__levelShow = GAME.level.levelMap[self.level]
+    self.__levelShow = gameCore.level.levelMap[self.level]
     local r = self.baseAttr;
     -- 增长因子
     local factor = self:getLevelFactor()
