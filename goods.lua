@@ -77,6 +77,7 @@ function Goods:use(user, target)
 end
 
 Goods.Actions = {
+    -- 
     equip_buff = function(g, user, target)
         if g.time > 0 then
             Goods.buffAction(g, user, target)
