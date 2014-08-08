@@ -14,11 +14,11 @@ function Sprite:new(id, name, sex)
         loc = {x = 0, y = 0},
         baseAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
         realAttr = {hp = 200, mp = 150, speed = 5, sense = 5, strong = 5},
-        goods = {},
         buff = {},
         equip = {},
         -- 炼化
         digest = {},
+        bag = Bag:new(100),
     }
     setmetatable(o, self)
     self.__index = self
@@ -177,12 +177,7 @@ function Sprite:delBuff(id)
 end
 
 function Sprite:addEquip(equip)
-    -- 再次使用则 关闭
-    if self.equip[equip.id] then
-        self:delEquip(equip.id)
-    else
-        self.equip[equip.id] = equip
-    end
+    self.equip[equip.id] = equip
 end
 
 function Sprite:delEquip(id)
@@ -209,6 +204,18 @@ function Sprite:delDigest(id)
 end
 
 function Sprite:getRealAttr()
+    local real = self.realAttr
+    return real
+end
+
+function Sprite:getBaseAttr()
+    local base = self.baseAttr
+    for k, v in pairs(self.equip) do
+        if g.baseAttr ~= nil then
+            self:attrPlus(base, g.baseAttr)
+        end
+    end
+    return base
 end
 
 

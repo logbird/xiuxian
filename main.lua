@@ -1,3 +1,4 @@
+require("util")
 require("sprite")
 require("bag")
 require("goods")
@@ -16,6 +17,8 @@ end
 local s = Sprite:new(1, '张三', 1)
 local g = Goods:new()
 g:setAttr(gameCore.goods[1])
+s.bag:add(g, 10)
 
-g:use(s, {s}, 1)
+s.bag:use(g, s, {s}, 10);
 
+var_dump(s)

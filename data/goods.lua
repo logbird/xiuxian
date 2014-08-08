@@ -5,11 +5,10 @@ local goods = {
         type = 'medicine',
         role = 'buff',
         time = 0,
-        exp = 5,
-        sum = 10,
+        exp = 20,
         base = {
-            hp = 100,
-            mp = 100,
+            hp = 1000,
+            mp = 1000,
         },
     }
 }

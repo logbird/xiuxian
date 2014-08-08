@@ -111,14 +111,6 @@ Goods.Actions = {
         return true
     end,
     medicine_buff = function(g, user, target)
-        sum = 1
-        if g.sum < sum then
-            return false
-        elseif g.sum == sum then
-            g.sum = 0
-        elseif g.sum > sum then
-            g.sum = g.sum - sum
-        end
         if g.time > 0 then
             Goods.buffAction(g, user, target)
         else
@@ -128,14 +120,6 @@ Goods.Actions = {
         end
     end,
     medicine_digest = function(g, user, target)
-        sum = 1
-        if g.sum < sum then
-            return false
-        elseif g.sum == sum then
-            g.sum = 0
-        elseif g.sum > sum then
-            g.sum = g.sum - sum
-        end
         if g.time > 0 then
             Goods.addDigest(g.id, Goods.name, g)
         else

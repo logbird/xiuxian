@@ -18,28 +18,51 @@ function Bag:add(goods, sum)
     if goods.id ~= goods.tid then
         sum = 1
     end
-    for k, v in pairs(self.goods) do
-        if v.tid == goods.tid then
-            self.goods[k].sum = v.sum + sum
-            return true
-        end
+
+    if self:checkExists(goods) then
+        self.goods[goods.id].sum = goods.sum + sum
+    else
+        goods.sum = sum
+        self.goods[goods.id] = goods
     end
-    table.insert(self.goods, goods)
     return true
 end
 
+function Bag:checkExists(goods)
+    return self.goods[goods.id] ~= nil
+end
+
+function Bag:find(goods)
+    return self.goods[goods.id]
+end
+
 function Bag:del(goods, sum)
-    for k, v in pairs(self.goods) do
-        if v.tid == goods.tid then
-            if sum == v.sum then
-                table.remove(k)
-                return true
-            elseif sum > goods.sum then
-                return false
-            else
-                self.goods[k].sum = v.sum - sum
-            end
-        end
+    if self:checkExists(goods) == false then
+        return false
     end
-    return false
+    g = self:find(goods)
+    if sum > g.sum then
+        return false
+    end
+    self.goods[goods.id].sum = g.sum - sum
+    if g.sum == 0 then
+        table.remove(self.goods, goods.id)
+    end
+
+    return true 
+end
+
+function Bag:use(g, user, target, sum)
+    if self:checkExists(g) == false then
+        return false
+    end
+    g = self:find(g)
+    if sum > g.sum then
+        return false
+    end
+    for i=1,sum,1 do
+        g:use(user, target)
+        self:del(g, 1)
+    end
+    return true
 end
