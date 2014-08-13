@@ -26,3 +26,6 @@ function var_dump(data, max_level, prefix)
         end
     end
 end
+
+function randName(xing, sex)
+end
