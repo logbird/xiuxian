@@ -27,5 +27,29 @@ function var_dump(data, max_level, prefix)
     end
 end
 
-function randName(xing, sex)
+-- 在字典中随机 一个名字
+function randName(type)
+    dict = gameCore.nameDict[type]
+    return dict[math.random(1, #dict)]
+end
+
+-- 随机 玩家名字
+function randPlayerName(sex, xing, length)
+    sex = sex ~= nil and sex or math.random(1, 2)
+    length = length ~= nil and length or math.random(1, 2)
+    xing = randName('xing')
+    playerName = xing
+    nt = sex == 1 and 'nanming' or 'nvming'
+    for i = 1, length, 1 do
+        playerName = playerName .. randName(nt)
+    end
+    return playerName
+end
+
+
+function createPlayers(sum)
+    for i = 1, sum, 1 do
+        local sex = math.random(1, 2)
+        gameCore.players[i] = Sprite.new(i, randPlayerName(sex), sex)
+    end
 end

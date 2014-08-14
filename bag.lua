@@ -1,15 +1,13 @@
 -- Bag基类
-Bag = {
-}
-
-function Bag:new(space)
+Bag = class('Bag', function()
     local o = {
         space = space,
         goods = {},
     }
-    setmetatable(o, self)
-    self.__index = self
     return o
+end)
+
+function Bag:ctor(space)
 end
 
 function Bag:add(goods, sum)

@@ -1,8 +1,5 @@
 -- sprite基类
-Sprite = {
-}
-
-function Sprite:new(id, name, sex)
+Sprite = class("Sprite", function()
     local o = {
         id = id,
         name = '',
@@ -18,17 +15,20 @@ function Sprite:new(id, name, sex)
         equip = {},
         -- 炼化
         digest = {},
-        bag = Bag:new(100),
+        bag = Bag.new(100),
     }
-    setmetatable(o, self)
-    self.__index = self
+    return o
+end
+)
+
+function Sprite:ctor(id, name, sex)
     self:setName(name)
     self:setSex(sex)
-    return o
 end
 
 function Sprite:setName(name)
     self.name = name
+    print(self.name)
 end
 
 function Sprite:setLoc(x, y)
@@ -44,35 +44,6 @@ function Sprite:setTalent(talent)
         self.talent = 100
     else
         self.talent = talent
-    end
-end
-
-function Sprite:setbaseAttr(attr)
-    local b = self.baseAttr;
-    self.baseAttr['hp'] = attr['hp'] or b['hp'] 
-    self.baseAttr['mp'] = attr['mp'] or b['mp']
-    self.baseAttr['speed'] = attr['speed'] or b['speed'] 
-    self.baseAttr['sense'] = attr['sense'] or b['sense'] 
-    self.baseAttr['strong'] = attr['strong'] or b['strong']
-end
-
-function Sprite:setRealAttr(attr)
-    local r = self.realAttr;
-    local b = self.baseAttr;
-    if attr['hp'] then
-        self.realAttr['hp'] = attr['hp'] > b['hp'] and b['hp'] or attr['hp']
-    end
-    if attr['mp'] then
-        self.realAttr['mp'] = attr['mp'] > b['mp'] and b['mp'] or attr['mp']
-    end
-    if attr['speed'] then
-        self.realAttr['speed'] = attr['speed'] > b['speed'] and b['speed'] or attr['speed']
-    end
-    if attr['sense'] then
-        self.realAttr['sense'] = attr['sense'] > b['sense'] and b['sense'] or attr['sense']
-    end
-    if attr['strong'] then
-        self.realAttr['strong'] = attr['strong'] > b['strong'] and b['strong'] or attr['strong']
     end
 end
 
@@ -105,12 +76,6 @@ function Sprite:attrMutiply(old, new)
         if new[k] then
             old[k] = v * new[k]
         end
-    end
-end
-
-function Sprite:bestState()
-    for k, v in pairs(self.baseAttr) do
-        self.realAttr[k] = v
     end
 end
 
@@ -218,7 +183,84 @@ function Sprite:getBaseAttr()
     return base
 end
 
+function Sprite:bestState()
+    local base = self:getBaseAttr()
+    for k, v in pairs(base) do
+        self.realAttr[k] = v
+    end
+end
+
+function Sprite:setbaseAttr(attr)
+    local b = self.baseAttr;
+    self.baseAttr['hp'] = attr['hp'] or b['hp'] 
+    self.baseAttr['mp'] = attr['mp'] or b['mp']
+    self.baseAttr['speed'] = attr['speed'] or b['speed'] 
+    self.baseAttr['sense'] = attr['sense'] or b['sense'] 
+    self.baseAttr['strong'] = attr['strong'] or b['strong']
+end
+
+function Sprite:setRealAttr(attr)
+    local r = self.realAttr;
+    local b = self:getBaseAttr()
+    if attr['hp'] then
+        self.realAttr['hp'] = attr['hp'] > b['hp'] and b['hp'] or attr['hp']
+    end
+    if attr['mp'] then
+        self.realAttr['mp'] = attr['mp'] > b['mp'] and b['mp'] or attr['mp']
+    end
+    if attr['speed'] then
+        self.realAttr['speed'] = attr['speed'] > b['speed'] and b['speed'] or attr['speed']
+    end
+    if attr['sense'] then
+        self.realAttr['sense'] = attr['sense'] > b['sense'] and b['sense'] or attr['sense']
+    end
+    if attr['strong'] then
+        self.realAttr['strong'] = attr['strong'] > b['strong'] and b['strong'] or attr['strong']
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- 攻击者 攻击类型(物品、技能、肉身) 攻击数据
 function Sprite:defAction(from, type, atk)
 end
+
+

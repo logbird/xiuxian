@@ -1,9 +1,5 @@
 -- goods基类
-Goods = {
-    name = 'goods',
-}
-
-function Goods:new()
+Goods = class('Goods', function()
     local o = {
         id = '',
         -- 用于分组
@@ -19,9 +15,10 @@ function Goods:new()
         useHook = nil,
         otherAttr = nil
     }
-    setmetatable(o, self)
-    self.__index = self
     return o
+end)
+
+function Goods:ctor()
 end
 
 function Goods:setAttr(opt)

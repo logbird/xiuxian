@@ -1,8 +1,5 @@
 -- Map基类
-Map = {
-}
-
-function Map:new(space)
+Map = class('Map', function()
     local o = {
         -- 洲 山 地点
         id = '00000',
@@ -12,7 +9,7 @@ function Map:new(space)
         buildings = {},
         border = {}
     }
-    setmetatable(o, self)
-    self.__index = self
     return o
+end)
+function Map:ctor()
 end
