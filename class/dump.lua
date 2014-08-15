@@ -44,16 +44,13 @@ function Dump:load(saveID)
     local save = io.readfile(self:getSavePath(saveID))
     local save = loadstring(save)()
     for k,v in pairs(self.module) do
-        local t = self:restore(save[v])
-        var_dump(t)
-        break
+        gameCore[v] = self:restore(save[v])
     end
 end
 
 function Dump:restore(tbl)
     if type(tbl) == 'table' then
         if tbl.__cname ~= nil and tbl.class ~= nil then
-            print(tbl.__cname)
             local tmp = self.restoreModule[tbl.__cname]()
             for k,v in pairs(tbl) do
                 tmp[k] = v

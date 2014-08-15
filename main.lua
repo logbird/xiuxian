@@ -35,7 +35,11 @@ gameSave()
 
 gameLoad()
 
-var_dump(gameCore.players);
+local g = Goods.new()
+g:setAttr(gameCore.goods[1])
+
+var_dump(gameCore.players[1]);
+s.bag:use(g, s, {s}, 10);
 
 
 
