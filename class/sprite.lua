@@ -28,7 +28,6 @@ end
 
 function Sprite:setName(name)
     self.name = name
-    print(self.name)
 end
 
 function Sprite:setLoc(x, y)

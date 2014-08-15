@@ -53,3 +53,11 @@ function createPlayers(sum)
         gameCore.players[i] = Sprite.new(i, randPlayerName(sex), sex)
     end
 end
+
+function gameSave(saveID)
+    Dump.new():save(saveID)
+end
+
+function gameLoad(saveID)
+    Dump.new():load(saveID)
+end
